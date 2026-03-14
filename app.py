@@ -223,8 +223,8 @@ if ds:
                 )
 
                 view_state = pdk.ViewState(
-                    latitude=df_pydeck['lat'].mean() if not df_pydeck.empty else 0,
-                    longitude=df_pydeck['lon'].mean() if not df_pydeck.empty else 0,
+                    latitude=float(df_pydeck['lat'].mean()) if not df_pydeck.empty else 0.0,
+                    longitude=float(df_pydeck['lon'].mean()) if not df_pydeck.empty else 0.0,
                     zoom=2,
                     pitch=45,
                 )

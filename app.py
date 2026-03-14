@@ -143,7 +143,7 @@ if ds:
             df_map['lon'] = (df_map['lon'] + 180) % 360 - 180
 
         # --- Main Layout ---
-        tab1, tab2, tab3 = st.tabs(["🗺️ Spatial View", "📈 Temporal View", "🌐 3D Globe Viewer"])
+        tab1, tab2, tab3 = st.tabs(["🗺️ Spatial View", "📈 Temporal View", "🌐 3D Map Viewer"])
         
         with tab1:
             st.subheader(f"Global Distribution of {selected_var} on {selected_time.strftime('%Y-%m-%d')}")
@@ -191,7 +191,7 @@ if ds:
             st.plotly_chart(fig_ts, use_container_width=True)
             
         with tab3:
-            st.subheader("3D Interactive Globe Render")
+            st.subheader("3D Interactive Map Render")
             st.markdown("A 3D visualization using PyDeck.")
             
             # Simple PyDeck implementation (HexagonLayer or ScatterplotLayer)
@@ -223,9 +223,9 @@ if ds:
                 )
 
                 view_state = pdk.ViewState(
-                    latitude=0,
-                    longitude=0,
-                    zoom=0.5,
+                    latitude=df_pydeck['lat'].mean() if not df_pydeck.empty else 0,
+                    longitude=df_pydeck['lon'].mean() if not df_pydeck.empty else 0,
+                    zoom=2,
                     pitch=45,
                 )
 
@@ -233,7 +233,8 @@ if ds:
                     layers=[layer],
                     initial_view_state=view_state,
                     tooltip={"text": f"Lat: {{lat}}\nLon: {{lon}}\n{selected_var}: {{{selected_var}}}"},
-                    map_style='mapbox://styles/mapbox/dark-v10',
+                    map_provider='carto',
+                    map_style='dark',
                 )
                 
                 # Render

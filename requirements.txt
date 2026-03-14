@@ -1,0 +1,9 @@
+streamlit
+xarray
+netCDF4
+pandas
+numpy
+plotly
+pydeck
+h5netcdf
+pooch

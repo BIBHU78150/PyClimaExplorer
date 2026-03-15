@@ -82,13 +82,19 @@ def update_tour_state(mode: bool, step: int = 1, completed: bool = False):
 
 # --- Data Loading ---
 @st.cache_data
-def load_tutorial_data():
-    """Loads a default tutorial dataset (air temperature)."""
+def load_demo_data(dataset_name):
+    """Loads either the tutorial dataset or a pre-downloaded demo dataset."""
     try:
-        ds = xr.tutorial.open_dataset("air_temperature").load()
-        return ds
+        if dataset_name == "Tutorial (Air Temperature)":
+            return xr.tutorial.open_dataset("air_temperature").load()
+        elif dataset_name == "NCEP Air Temp 2023":
+            return xr.open_dataset("demo_datasets/ncep_air_temp_2023.nc").load()
+        elif dataset_name == "NCEP Sea Level Pressure 2023":
+            return xr.open_dataset("demo_datasets/ncep_slp_2023.nc").load()
+        elif dataset_name == "NCEP Surface Pressure LTM":
+            return xr.open_dataset("demo_datasets/ncep_surface_pressure_ltm.nc").load()
     except Exception as e:
-        st.error(f"Error loading tutorial dataset: {e}")
+        st.error(f"Error loading {dataset_name}: {e}")
         return None
 
 def process_uploaded_data(uploaded_file):
@@ -110,7 +116,8 @@ st.sidebar.header("Data Source")
 
 # If tour mode is active, lock the data source to the tutorial and hide the radio buttons
 if st.session_state.tour_mode:
-    data_source = "Tutorial Dataset (air_temperature)"
+    data_source = "Demo Datasets"
+    demo_selection = "Tutorial (Air Temperature)"
     # The view mode depends on the tour step
     if st.session_state.tour_step == 3:
         view_mode = "Comparison View"
@@ -122,13 +129,22 @@ if st.session_state.tour_mode:
         update_tour_state(False, completed=True)
         st.rerun()
 else:
-    data_source = st.sidebar.radio("Select Data Source", ["Tutorial Dataset (air_temperature)", "Upload NetCDF File"])
+    data_source = st.sidebar.radio("Select Data Source", ["Demo Datasets", "Upload NetCDF File"])
+    
+    if data_source == "Demo Datasets":
+        demo_selection = st.sidebar.selectbox("Select a Demo Dataset", [
+            "Tutorial (Air Temperature)",
+            "NCEP Air Temp 2023",
+            "NCEP Sea Level Pressure 2023",
+            "NCEP Surface Pressure LTM"
+        ])
+        
     view_mode = st.sidebar.radio("View Mode", ["Single View", "Comparison View"])
 
 ds = None
-if data_source == "Tutorial Dataset (air_temperature)":
-    with st.spinner("Loading tutorial data..."):
-        ds = load_tutorial_data()
+if data_source == "Demo Datasets":
+    with st.spinner(f"Loading {demo_selection}..."):
+        ds = load_demo_data(demo_selection)
 else:
     uploaded_file = st.sidebar.file_uploader("Upload a .nc file", type=["nc"])
     if uploaded_file is not None:

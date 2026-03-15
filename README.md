@@ -8,6 +8,9 @@ PyClimaExplorer allows researchers and the public to slice, dice, and view multi
 - **Spatial View**: A 2D globe map visualizing a variable for a specific time index using Plotly.
 - **Temporal View**: A time-series chart showing the historic trend of a variable at specific latitude/longitude coordinates.
 - **3D Interactive Map**: An interactive 3D representation highlighting regional anomalies using PyDeck.
+- **Comparison Mode**: A split-screen dual view allowing independent analysis of two different dates simultaneously.
+- **Date Filtering**: Slice large datasets by specific date ranges before rendering visual components.
+- **Story Mode**: A Guided Tour onboarding flow specifically designed to illustrate notable climate anomalies immediately upon opening the app.
 
 ## Pre-requisites
 
